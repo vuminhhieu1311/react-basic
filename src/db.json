@@ -1,0 +1,71 @@
+{
+  "customers": [
+    {
+      "id": "3f47f91114b8fcca4a20c53c",
+      "fullname": "Jimmy Cartwright",
+      "sex": "female",
+      "age": "25",
+      "phone": "594.881.1945 x243"
+    },
+    {
+      "id": "ff6452eb4a768418ef4c9cf0",
+      "fullname": "Kristi Veum",
+      "sex": "male",
+      "age": 70,
+      "phone": "204.476.0643 x1499"
+    },
+    {
+      "id": "da9d32522fcfabb44846c409",
+      "fullname": "Tracey Bahringer",
+      "sex": "female",
+      "age": 19,
+      "phone": "994.760.2238 x5567"
+    },
+    {
+      "id": "b4aede9a0300ade17faedfda",
+      "fullname": "Ivan Dickens",
+      "sex": "female",
+      "age": 60,
+      "phone": "(417) 912-6979"
+    },
+    {
+      "id": "9fa8ecfd5f36cfbea77cc0b7",
+      "fullname": "Amelia Gerhold MD",
+      "sex": "male",
+      "age": 46,
+      "phone": "834-400-9645 x47022"
+    }
+  ],
+  "books": [
+    {
+      "id": "150cacc4fff9b20ebb2aff62",
+      "title": "The Great Gatsby",
+      "author": "W.G. Sebald",
+      "price": 641000
+    },
+    {
+      "id": "fc0457da0b57cd93c3a96211",
+      "title": "A Portrait of the Artist as a Young Man",
+      "author": "Thomas Hardy",
+      "price": 828000
+    },
+    {
+      "id": "fecbdaf84dd7a7ddc833d2c2",
+      "title": "The Pursuit of Love",
+      "author": "Arthur Schopenhauer",
+      "price": 868000
+    },
+    {
+      "id": "f29a3d48ef1d3c7f9337a857",
+      "title": "The Handmaid's Tale",
+      "author": "Joseph Conrad",
+      "price": 911000
+    },
+    {
+      "id": "b49dd1d1c1c0d4c8e7eb1e1b",
+      "title": "Little Women",
+      "author": "W.K. Marriott",
+      "price": 357000
+    }
+  ]
+}
