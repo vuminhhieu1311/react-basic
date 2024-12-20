@@ -8,7 +8,10 @@ const CustomerForm = ({form, onFinishForm, formValue, setFormValue, submitRef}) 
                 layout={'vertical'}
                 form={form}
                 onFinish={onFinishForm}
-                >
+                initialValues={{
+                    sex: 'male',
+                }}
+            >
                 <Form.Item 
                     label="Tên" name={"fullname"}
                     rules={[{ required: true, message: 'Please input your fullname!' }]}
@@ -47,7 +50,6 @@ const CustomerForm = ({form, onFinishForm, formValue, setFormValue, submitRef}) 
                 >
                 <Radio.Group 
                     onChange={(e) => formValue ? setFormValue({ ...formValue, sex: e.target.value }) : ''}
-                    defaultValue={"male"}
                 >
                     <Radio.Button value="male">Nam</Radio.Button>
                     <Radio.Button value="female">Nữ</Radio.Button>

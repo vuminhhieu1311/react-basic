@@ -1,8 +1,4 @@
-// import { Faker } from "@faker-js/faker";
-
 const fs = require('fs');
-// import fs from 'fs';
-
 const { faker } = require('@faker-js/faker');
 
 const randomBookData = (n)=>{

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Admin from '../admin/Admin';
 import { useParams } from 'react-router-dom';
 import { Form, Modal } from 'antd';
 import '../../App.css';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import CustomerForm from './CustomerForm';
+import Sidebar from '../sidebar/Sidebar';
 
 const queryClient = new QueryClient()
 
@@ -35,8 +35,7 @@ const CustomerEdit = () => {
             })
             return data;
         },
-        staleTime: 10000,
-        enabled: !!id, // Điều kiện: chỉ kích hoạt khi `id` là truthy
+        enabled: !!id, 
     })
 
     useEffect(() => {
@@ -52,13 +51,13 @@ const CustomerEdit = () => {
         const keys2 = Object.keys(obj2);
       
         if (keys1.length !== keys2.length) {
-          return false;
+            return false;
         }
       
         for (let key of keys1) {
-          if (String(obj1[key]) !== String(obj2[key])) {
-            return false;
-          }
+            if (String(obj1[key]) !== String(obj2[key])) {
+                return false;
+            }
         }
         return true;
     }
@@ -67,7 +66,7 @@ const CustomerEdit = () => {
         const response = await fetch(`http://localhost:3001/customers/${id}`, {
             method: 'PATCH',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(values),
         });
@@ -77,7 +76,6 @@ const CustomerEdit = () => {
     const mutation = useMutation({mutationFn: submitCustomer})
 
     const onFinishForm = (values) => {
-        console.log('Form Data:', values);
         mutation.mutate(values, {
             onSuccess: (data) => {
                 queryClient.invalidateQueries("customers");
@@ -94,7 +92,7 @@ const CustomerEdit = () => {
     }
     return (
         <div>
-            <Admin item_active={'1'}></Admin>
+            <Sidebar item_active={'1'}></Sidebar>
             <div className='ml-96 mr-16 py-16'>
                 <div className='flex items-center gap-x-3 text-3xl'>
                     <p className=''>Khách hàng</p>

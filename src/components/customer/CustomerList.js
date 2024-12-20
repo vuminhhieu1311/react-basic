@@ -1,21 +1,27 @@
 import React from 'react';
-import Admin from '../admin/Admin';
-import { Button, Table } from 'antd';
+import { Button, Pagination, Table } from 'antd';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import '../../App.css';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import Sidebar from '../sidebar/Sidebar';
 
 const CustomerList = () => {
+    const navigate = useNavigate();
+    const searchQuery = new URLSearchParams(useLocation().search);
+    var page = searchQuery.get('page');
     const { data: customers, refetch } = useQuery({
-        queryKey: ['customers'], 
+        queryKey: ['customers', page], 
         queryFn: async () => {
-            const response = await fetch('http://localhost:3001/customers');
+            if (!page) {
+                page = 1
+            }
+            const response = await fetch(`http://localhost:3001/customers?_page=${page}`);
             return response.json();
         },
-        staleTime: 10000
+        staleTime: 10000,
+        keepPreviousData: true
     })
-    
     const deleteCustomer = async (id) => {
         const response = await fetch(`http://localhost:3001/customers/${id}`, {
             method: 'DELETE',
@@ -37,6 +43,10 @@ const CustomerList = () => {
             })
         }
         
+    }
+
+    const handlePageChange = (page) => {
+        navigate(`/customers?page=${page}`);
     }
 
     const columns = [
@@ -75,7 +85,7 @@ const CustomerList = () => {
       ];
     return (
         <div>
-            <Admin item_active={'1'}></Admin>
+            <Sidebar item_active={'1'}></Sidebar>
             <div className='ml-96 py-16'>
                 <div className='flex items-center gap-x-3 text-3xl'>
                     <p className=''>Khách hàng</p>
@@ -84,14 +94,19 @@ const CustomerList = () => {
                 </div>
                 <div className='mt-16'>
                     <Table 
-                        dataSource={customers} 
+                        dataSource={customers ? customers.data : ''} 
                         columns={columns} 
-                        className='' 
-                        pagination={{
-                            pageSize: 10,
-                            style: { fontSize: '20px' }, // Chỉnh cỡ chữ của phân trang
-                        }}
+                        pagination={false} 
                     />
+                    <div className='mt-4'>
+                        <Pagination
+                            current={page}    // Trang hiện tại
+                            pageSize={10}      // Số lượng bản ghi mỗi trang
+                            total={customers ? customers.items : ''}       // Tổng số bản ghi
+                            showSizeChanger={false}
+                            onChange={handlePageChange} // Hàm gọi khi thay đổi trang
+                        />
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,10 +1,10 @@
 import { Form } from 'antd';
 import React from 'react';
-import Admin from '../admin/Admin';
 import '../../App.css';
 import CustomerForm from './CustomerForm';
 import { QueryClient, useMutation } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
+import Sidebar from '../sidebar/Sidebar';
 
 const queryClient = new QueryClient()
 
@@ -39,7 +39,7 @@ const CustomerCreate = () => {
     }
     return (
         <div>
-            <Admin item_active={'2'}></Admin>
+            <Sidebar item_active={'2'}></Sidebar>
             <div className='ml-96 mr-16 py-16'>
                 <div className='flex items-center gap-x-3 text-3xl'>
                     <p className=''>Khách hàng</p>
