@@ -1,0 +1,19 @@
+{
+    "customer": "Customer",
+    "list": "List",
+    "account": "Account",
+    "setting": "Settings",
+    "fullname": "Fullname",
+    "age": "Age",
+    "phone": "Phone number",
+    "manager": "Manager",
+    "gender": "Gender",
+    "language": "Language", 
+    "en": "English", 
+    "vi": "Vietnamese",
+    "create": "Create",
+    "update": "Update",
+    "male": "Male",
+    "female": "Female",
+    "placeholder": "Enter your {{feature}}..."
+}

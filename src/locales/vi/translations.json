@@ -1,0 +1,19 @@
+{
+    "customer": "Khách hàng",
+    "list": "Danh sách",
+    "account": "Tài khoản",
+    "setting": "Cài đặt",
+    "fullname": "Tên",
+    "age": "Tuổi",
+    "phone": "Số điện thoại",
+    "manager": "Quản lý",
+    "gender": "Giới tính",
+    "language": "Ngôn ngữ" ,
+    "en": "Tiếng Anh", 
+    "vi": "Tiếng Việt",
+    "create": "Tạo mới",
+    "update": "Sửa thông tin",
+    "male": "Nam",
+    "female": "Nữ",
+    "placeholder": "Nhập {{feature}}..."
+}
