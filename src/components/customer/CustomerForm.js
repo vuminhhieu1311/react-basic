@@ -1,4 +1,4 @@
-import { Button, Drawer, Form, Input, Modal, Radio, Space, Spin } from 'antd';
+import { Button, Drawer, Form, Input, Modal, Radio, Space } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreateCustomer, useUpdateCustomer } from '../../react-query/hooks/request';
@@ -14,7 +14,7 @@ const CustomerForm = ({
     const {t} = useTranslation()
     const [form] = Form.useForm();
     const [formValue, setFormValue] = useState(null)
-    const [isOpenModal, setIsOpenModal] = useState(false)
+    const [loadingButton, setLoadingButton] = useState(false)
     const submitRef = useRef(null)
 
     useEffect(() => {
@@ -51,7 +51,7 @@ const CustomerForm = ({
 
     const onFinishForm = (values) => {
         values.updated_at = new Date().toISOString()
-        setIsOpenModal(true)
+        setLoadingButton(true)
         if (!updateInfo) {
             createaMutation.mutate(values, {
                 onSuccess: (data) => {
@@ -72,7 +72,7 @@ const CustomerForm = ({
                     })
                 },  
                 onSettled: () => {
-                    setIsOpenModal(false)
+                    setLoadingButton(false)
                 }
             })
         } else {
@@ -94,7 +94,7 @@ const CustomerForm = ({
                     })
                 },  
                 onSettled: () => {
-                    setIsOpenModal(false)
+                    setLoadingButton(false)
                 }
             })
         }
@@ -143,6 +143,8 @@ const CustomerForm = ({
                         <Button onClick={onClose}>Cancel</Button>
                         <Button type="primary" ref={submitRef}
                             onClick={() => {form.submit()}}
+                            loading={loadingButton}
+                            iconPosition="end"
                         >
                             Submit
                         </Button>
@@ -254,15 +256,6 @@ const CustomerForm = ({
                     </Form.Item>
                 </Form>
             </Drawer>
-            <Modal 
-                closable={false} 
-                className='text-center' 
-                title='Vui lòng chờ...'
-                open={isOpenModal}
-                footer={() => (<div></div>)}
-            >
-                <Spin />
-            </Modal>
         </div>
     );
 };

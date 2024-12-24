@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, Modal, Pagination, Skeleton, Spin, Table } from 'antd';
+import { Button, Modal, Pagination, Popconfirm, Skeleton, Table } from 'antd';
 import '../../App.css';
 import { DeleteOutlined, EditOutlined, PlusOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -15,10 +15,9 @@ const CustomerList = () => {
     const [open, setOpen] = useState(false);
 
     const [createInfo, setCreateInfo] = useState(null)
-    const [isOpenModal, setIsOpenModal] = useState(false)
 
     const [updateInfo, setUpdateInfo] = useState(null)
-
+    
     const navigate = useNavigate();
     const searchQuery = new URLSearchParams(useLocation().search);
     var page = searchQuery.get('page');
@@ -38,26 +37,22 @@ const CustomerList = () => {
     const mutation = useDeleteCustomer()
 
     const handleDeleteCustomer = (id) => {
-        Modal.confirm({
-            title: "Are you sure you want to delete this item?",
-            onOk() {
-                setIsOpenModal(true)
-                mutation.mutate(id, {
-                    onSuccess: (data) => {
-                        refetch();
-                    },
-                    onError: (error) => {
-                        Modal.error({
-                            title: 'Có lỗi xảy ra!',
-                            content: 'Vui lòng thử lại sau',
-                        })
-                    },
-                    onSettled: () => {
-                        setIsOpenModal(false)
-                    }
-                })
-            }
-        })
+        return new Promise((resolve) => {
+            mutation.mutate(id, {
+                onSuccess: (data) => {
+                    refetch();
+                },
+                onError: (error) => {
+                    Modal.error({
+                        title: 'Có lỗi xảy ra!',
+                        content: 'Vui lòng thử lại sau',
+                    })
+                },
+                onSettled: () => {
+                    resolve(null)
+                }
+            })
+        });
     }
 
     const handlePageChange = (page) => {
@@ -124,7 +119,13 @@ const CustomerList = () => {
                                 }
                             } 
                         }><EditOutlined /></Button>
-                        <Button type="primary" danger onClick={() => handleDeleteCustomer(text)}><DeleteOutlined /></Button>
+                        <Popconfirm
+                            title="Are you sure you want to delete this item?"
+                            onConfirm={() => handleDeleteCustomer(text)}
+                        >
+                            <Button type="primary" danger><DeleteOutlined /></Button>
+                        </Popconfirm>
+                        {/* <Button type="primary" danger onClick={(e) => {handleDeleteCustomer(text, e)}}><DeleteOutlined /></Button> */}
                     </div>
                 ),
         }
@@ -182,15 +183,6 @@ const CustomerList = () => {
                 refetch={refetch}
                 updateInfo={updateInfo}
             ></CustomerForm>
-            <Modal 
-                closable={false} 
-                className='text-center' 
-                title='Vui lòng chờ...'
-                open={isOpenModal}
-                footer={() => (<div></div>)}
-            >
-                <Spin />
-            </Modal>
         </div>
     );
 };
