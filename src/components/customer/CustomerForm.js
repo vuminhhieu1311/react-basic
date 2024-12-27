@@ -1,7 +1,8 @@
-import { Button, Drawer, Form, Input, Modal, Radio, Space } from 'antd';
+import { Button, Col, DatePicker, Drawer, Form, Input, Modal, Radio, Row, Space } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCreateCustomer, useUpdateCustomer } from '../../react-query/hooks/request';
+import dayjs from 'dayjs';
 
 const CustomerForm = ({
     onClose, 
@@ -18,39 +19,37 @@ const CustomerForm = ({
     const submitRef = useRef(null)
 
     useEffect(() => {
+        let info = null
         if (!updateInfo) {
-            form.setFieldsValue({
-                fullname: createInfo ? createInfo.fullname : null,
-                age: createInfo ? createInfo.age : null,
-                phone: createInfo ? createInfo.phone : null,
-                sex: createInfo ? createInfo.sex || 'male' : 'male',
-            })
+            info = createInfo
             if (submitRef.current) {
                 submitRef.current.disabled = false
             }
         } else {
-            form.setFieldsValue({
-                fullname: updateInfo ? updateInfo.fullname : null,
-                age: updateInfo ? updateInfo.age : null,
-                phone: updateInfo ? updateInfo.phone : null,
-                sex: updateInfo ? updateInfo.sex : 'male',
-            });
+            info = updateInfo
             setFormValue({
                 id: updateInfo ? updateInfo.id : null,
                 fullname: updateInfo ? updateInfo.fullname : null,
-                age: updateInfo ? updateInfo.age : null,
+                birthdate: updateInfo ? updateInfo.birthdate : null,
                 phone: updateInfo ? updateInfo.phone : null,
-                sex: updateInfo ? updateInfo.sex || 'male' : 'male',
+                sex: updateInfo ? String(updateInfo.sex) || '0' : '0',
+                created_at: updateInfo ? updateInfo.created_at : null,
                 updated_at: updateInfo ? updateInfo.updated_at : null,
             })
         }
+        form.setFieldsValue({
+            fullname: info ? info.fullname : null,
+            birthdate: info ? dayjs(info.birthdate, 'YYYY-MM-DD') : null,
+            phone: info ? info.phone : null,
+            sex: info ? String(info.sex || '0') : '0',
+        });
     }, [updateInfo])
 
     const createaMutation = useCreateCustomer()
     const updateMutation = useUpdateCustomer()
 
     const onFinishForm = (values) => {
-        values.updated_at = new Date().toISOString()
+        values.birthdate = values.birthdate.format("YYYY-MM-DD") 
         setLoadingButton(true)
         if (!updateInfo) {
             createaMutation.mutate(values, {
@@ -58,9 +57,9 @@ const CustomerForm = ({
                     setCreateInfo(null)
                     form.setFieldsValue({
                         fullname: '',
-                        age: '',
+                        birthdate: '',
                         phone: '',
-                        sex: 'male',
+                        sex: 0,
                     })
                     onClose()
                     refetch()
@@ -80,9 +79,9 @@ const CustomerForm = ({
                 onSuccess: (data) => {
                     form.setFieldsValue({
                         fullname: '',
-                        age: '',
+                        birthdate: '',
                         phone: '',
-                        sex: 'male',
+                        sex: 0,
                     })
                     onClose()
                     refetch()
@@ -131,6 +130,14 @@ const CustomerForm = ({
         return true;
     }
 
+    const handleDateChange = (date, dateString) => {
+        if (!updateInfo) {
+            setCreateInfo({...createInfo, birthdate: dateString})
+        } else {
+            setFormValue({ ...formValue, birthdate: dateString })
+        }
+    };
+
     return (
         <div>
             <Drawer 
@@ -156,7 +163,7 @@ const CustomerForm = ({
                     form={form}
                     onFinish={onFinishForm}
                     initialValues={{
-                        sex: 'male',
+                        sex: '0',
                     }}
                 >
                     <Form.Item 
@@ -179,66 +186,58 @@ const CustomerForm = ({
                             }}
                         />
                     </Form.Item>
-                    <Form.Item 
-                        label={t('gender')}
-                        className='text-sm font-bold' 
-                        name={"sex"}
-                    >
-                        <Radio.Group 
-                            onChange={(e) => {
-                                if (!updateInfo) {
-                                    setCreateInfo({...createInfo, sex: e.target.value})
-                                } else {
-                                    setFormValue({ ...formValue, sex: e.target.value })
-                                }
-                            }}
-                        >
-                            <Radio.Button value="male" className='font-normal'>{t('male')}</Radio.Button>
-                            <Radio.Button value="female" className='font-normal'>{t('female')}</Radio.Button>
-                        </Radio.Group>
-                    </Form.Item>
-                    <Form.Item 
-                        label={t('age')}
-                        name={'age'}
-                        rules={[
-                            { required: true, message: 'Please input your age!' },
-                            {
-                                validator: (_, value) => {
-                                if (!value || Number.isInteger(Number(value))) {
-                                    return Promise.resolve();
-                                }
-                                    return Promise.reject("Please enter a valid integer!");
-                                },
-                            },
-                            {
-                                validator: (_, value) => {
-                                if (parseInt(value) >= 0 && parseInt(value) <= 120) {
-                                    return Promise.resolve();
-                                }
-                                    return Promise.reject("Age must be between 0 and 120!");
-                                },
-                            },
-                        ]}
-                        className='font-bold'
-                    >
-                        <Input 
-                            placeholder={t('placeholder', {feature: t('age').toLowerCase()})}
-                            className='text-sm py-2 font-normal' 
-                            onChange={(e) => {
-                                if (!updateInfo) {
-                                    setCreateInfo({...createInfo, age: e.target.value})
-                                } else {
-                                    setFormValue({ ...formValue, age: e.target.value })
-                                }
-                            }}
-                        />
-                    </Form.Item>
+                    <Row gutter={16}>
+                        <Col span={12}>
+                            <Form.Item 
+                                label={t('gender')}
+                                className='text-sm font-bold leading-5' 
+                                name={"sex"}
+                            >
+                                <Radio.Group 
+                                    onChange={(e) => {
+                                        if (!updateInfo) {
+                                            setCreateInfo({...createInfo, sex: e.target.value})
+                                        } else {
+                                            setFormValue({ ...formValue, sex: e.target.value })
+                                        }
+                                    }}
+                                >
+                                    <Radio.Button value="0" className='font-normal'>{t('male')}</Radio.Button>
+                                    <Radio.Button value="1" className='font-normal'>{t('female')}</Radio.Button>
+                                </Radio.Group>
+                            </Form.Item>
+                        </Col>
+                        <Col span={12}>
+                            <Form.Item 
+                                label={t('birthdate')}
+                                name={'birthdate'}
+                                className='font-bold leading-5'
+                                rules={[
+                                    { required: true, message: 'Vui lòng chọn ngày!' }
+                                ]}
+                            >
+                                <DatePicker
+                                    className='font-normal' 
+                                    onChange={handleDateChange}
+                                />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                    
+                    
                     <Form.Item 
                         label={t('phone')}
                         name={"phone"} 
                         rules={[
                             { required: true, message: 'Please input your phone!' },
-                            { max: 20, message: 'Maximum 20 characters allowed.' }
+                            {
+                                validator: (_, value) =>
+                                    value && /^[0-9]+$/.test(value)
+                                    ? Promise.resolve()
+                                    : Promise.reject(new Error("Phone number is invalid")),
+                            },
+                            { min: 10, message: 'Minimum 10 characters allowed.' },
+                            { max: 15, message: 'Maximum 15 characters allowed.' }
                         ]}
                         className='font-bold'
                     >

@@ -4,7 +4,7 @@
     "account": "Account",
     "setting": "Settings",
     "fullname": "Fullname",
-    "age": "Age",
+    "birthdate": "Date of birth",
     "phone": "Phone number",
     "manager": "Manager",
     "gender": "Gender",
@@ -15,5 +15,6 @@
     "update": "Update",
     "male": "Male",
     "female": "Female",
-    "placeholder": "Enter your {{feature}}..."
+    "placeholder": "Enter your {{feature}}...",
+    "password": "Password"
 }

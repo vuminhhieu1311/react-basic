@@ -1,7 +1,6 @@
-export const getCustomersPaginate =  async (page) => {
-    const response = await fetch(`http://localhost:3001/customers?_page=${page}&_sort=-updated_at`);
-    if (!response.ok) {
-        throw new Error("Failed to fetch customers");
-    }
-    return response.json()
+import apiClient from "./apiClient";
+
+export const getCustomersPaginate =  async (search, page) => {
+    const response = await apiClient.get(`http://127.0.0.1:8000/api/customers?${search !== '' ? 'search=' + search + '&' : ''}page=${page}`)
+    return response.data; 
 }

@@ -5,10 +5,10 @@ import { deleteCustomer } from "../../api/deleteCustomer";
 import { updateCustomer } from "../../api/updateCustomer";
 import queryKeys from "../constants/queryKeys";
 
-export const useCustomersPaginate = (page) => {
+export const useCustomersPaginate = (search, page) => {
     return useQuery({
-        queryKey: [queryKeys.getCustomersPaginate, page], 
-        queryFn: () => getCustomersPaginate(page),
+        queryKey: [queryKeys.getCustomersPaginate, search, page], 
+        queryFn: () => getCustomersPaginate(search, page),
         staleTime: 10000,
         keepPreviousData: true,
     })

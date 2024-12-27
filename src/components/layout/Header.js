@@ -2,23 +2,50 @@ import React from 'react';
 import '../../App.css';
 import { CaretDownOutlined, MenuOutlined, SettingOutlined } from '@ant-design/icons';
 
-import { Dropdown, Space } from 'antd';
+import { Button, Dropdown, Space } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { useLogout } from '../../react-query/hooks/logout';
 
 const Header = ({openSidebar, toggleSidebar}) => {
     const { t } = useTranslation();
     const navigate = useNavigate();
     const items = [
         {
-          key: '1',
-          label: t('setting'),
-          icon: <SettingOutlined />,
+            key: '1',
+            label: t('setting'),
+            icon: <SettingOutlined />,
+        },
+        {
+            key: '2',
+            label: 'Đăng xuất',
         },
     ];
+
+    const logoutMutation = useLogout()
     const handleDropdownClick = ({ key }) => {
-        if (key === '1') {
-            navigate('/settings')
+        switch (key) {
+            case '1':
+                navigate('/settings')
+                break;
+            case '2':
+                document.body.style.cursor = 'progress';
+                logoutMutation.mutate([], {
+                    onSuccess: (data) => {
+                        if (data.status_code === 200) {
+                            localStorage.removeItem('access_token')
+                            localStorage.removeItem('expires_at')
+                            navigate('/login')
+                        } 
+                    },
+                    onSettled: () => {
+                        document.body.style.cursor = 'default';
+                    }
+                })
+                
+                break;
+            default:
+                break;
         }
     };
     return (

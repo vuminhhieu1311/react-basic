@@ -1,7 +1,6 @@
+import apiClient from "./apiClient";
+
 export const getCustomer =  async (id) => {
-    const response = await fetch(`http://localhost:3001/customers/${id}`);
-    if (!response.ok) {
-        throw new Error("Failed to fetch customer");
-    }
-    return response.json()
+    const response = await apiClient.get(`http://127.0.0.1:8000/api/customers/${id}`)
+    return response.data; 
 }

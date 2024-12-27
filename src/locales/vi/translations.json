@@ -4,7 +4,7 @@
     "account": "Tài khoản",
     "setting": "Cài đặt",
     "fullname": "Tên",
-    "age": "Tuổi",
+    "birthdate": "Ngày sinh",
     "phone": "Số điện thoại",
     "manager": "Quản lý",
     "gender": "Giới tính",
@@ -15,5 +15,6 @@
     "update": "Sửa thông tin",
     "male": "Nam",
     "female": "Nữ",
-    "placeholder": "Nhập {{feature}}..."
+    "placeholder": "Nhập {{feature}}...",
+    "password": "Mật khẩu"
 }

@@ -9,23 +9,27 @@ import { useTranslation } from 'react-i18next';
 import CustomerForm from './CustomerForm';
 import { useCustomersPaginate, useDeleteCustomer } from '../../react-query/hooks/request';
 import { getCustomer } from '../../api/getCustomer';
+import { Input } from 'antd';
+const { Search } = Input;
 
 const CustomerList = () => {
     const { t } = useTranslation();
     const [open, setOpen] = useState(false);
-
     const [createInfo, setCreateInfo] = useState(null)
-
     const [updateInfo, setUpdateInfo] = useState(null)
-    
+
     const navigate = useNavigate();
     const searchQuery = new URLSearchParams(useLocation().search);
     var page = searchQuery.get('page');
+    var search = searchQuery.get('search');
     if (!page) {
         page = 1
     }
+    if (!search) {
+        search = ''
+    }
 
-    const { data: customers, refetch, isError, isLoading } = useCustomersPaginate(page)
+    const { data: customers, refetch, isError, isLoading } = useCustomersPaginate(search, page)
     useEffect(() => {
         if (isError) {
             Modal.error({
@@ -56,7 +60,7 @@ const CustomerList = () => {
     }
 
     const handlePageChange = (page) => {
-        navigate(`/customers?page=${page}`);
+        navigate(`/customers?${search !== '' ? 'search='+ search + '&' : ''}page=${page}`);
     }
 
     const columns = useMemo(() => [
@@ -69,9 +73,9 @@ const CustomerList = () => {
             ) : (<span>{text}</span>),
         },
         {
-            title: t('age'),
-            dataIndex: 'age',
-            key: 'age',
+            title: t('birthdate'),
+            dataIndex: 'birthdate',
+            key: 'birthdate',
             render: (text, record) => record.loading ? (
                 <Skeleton active paragraph={false} />
             ) : (<span>{text}</span>),
@@ -82,7 +86,7 @@ const CustomerList = () => {
             key: 'sex',
             render: (text, record) => record.loading ? (
                 <Skeleton active paragraph={false} />
-            ) : (<span>{t(text)}</span>),
+            ) : (<span>{t(text === 0 ? 'male' : 'female')}</span>),
         },
         {
             title: t('phone'),
@@ -109,7 +113,7 @@ const CustomerList = () => {
                             onClick={async () => {
                                 try {
                                     const customer = await getCustomer(text)
-                                    setUpdateInfo(customer)
+                                    setUpdateInfo(customer.data)
                                     setOpen(true);
                                 } catch (e) {
                                     Modal.error({
@@ -125,7 +129,6 @@ const CustomerList = () => {
                         >
                             <Button type="primary" danger><DeleteOutlined /></Button>
                         </Popconfirm>
-                        {/* <Button type="primary" danger onClick={(e) => {handleDeleteCustomer(text, e)}}><DeleteOutlined /></Button> */}
                     </div>
                 ),
         }
@@ -134,6 +137,10 @@ const CustomerList = () => {
     const onClose = () => {
         setOpen(false);
     };
+
+    const onSearch = (value, _e, info) => {
+        navigate(`/customers${value !== '' ? '?search='+ value : ''}`);
+    } 
     
     return (
         <div>
@@ -145,6 +152,15 @@ const CustomerList = () => {
                     <p className='text-sky-500'>{t("list")}</p>
                 </div>
                 <div className='mt-8'>
+                    <div className=''>
+                        <Search 
+                            placeholder="Input name, phone number..." 
+                            className='w-80 text-sm' 
+                            onSearch={onSearch} 
+                            enterButton 
+                            defaultValue={search}
+                        />
+                    </div>
                     <div className='text-end my-4'>
                         <Button 
                             type="primary" 
@@ -159,18 +175,18 @@ const CustomerList = () => {
                         </Button>
                     </div>
                     <Table 
-                        dataSource={isLoading ? Array(10).fill({ loading: true }) : (isError ? null : customers.data)} 
+                        dataSource={isLoading ? Array(10).fill({ loading: true }) : (isError ? null : customers.data.customers.data)} 
                         columns={columns} 
                         pagination={false} 
                         scroll={{ x: 650 }}
                     />
                     <div className='mt-4'>
                         <Pagination
-                            current={page}    // Trang hiện tại
-                            pageSize={10}      // Số lượng bản ghi mỗi trang
-                            total={customers ? customers.items : ''}       // Tổng số bản ghi
+                            current={page}    
+                            pageSize={10}
+                            total={customers ? customers.data.customers.total : ''}
                             showSizeChanger={false}
-                            onChange={handlePageChange} // Hàm gọi khi thay đổi trang
+                            onChange={handlePageChange}
                         />
                     </div>
                 </div>

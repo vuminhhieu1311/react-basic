@@ -1,13 +1,6 @@
+import apiClient from "./apiClient";
+
 export const createCustomer = async (values) => {
-    const response = await fetch(`http://localhost:3001/customers`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(values),
-    });
-    if (!response.ok) {
-        throw new Error("Failed to create customer");
-    }
-    return response.json()
+    const response = await apiClient.post('http://127.0.0.1:8000/api/customers', values)
+    return response.data; 
 }
