@@ -35,6 +35,8 @@ const Header = ({openSidebar, toggleSidebar}) => {
                         if (data.status_code === 200) {
                             localStorage.removeItem('access_token')
                             localStorage.removeItem('expires_at')
+                            localStorage.removeItem('refresh_token')
+                            localStorage.removeItem('rt_expires_at')
                             navigate('/login')
                         } 
                     },

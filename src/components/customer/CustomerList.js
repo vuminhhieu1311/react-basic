@@ -185,6 +185,7 @@ const CustomerList = () => {
                             current={page}    
                             pageSize={10}
                             total={customers ? customers.data.customers.total : ''}
+                            showTotal={(total) => `Total ${total} items`}
                             showSizeChanger={false}
                             onChange={handlePageChange}
                         />

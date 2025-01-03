@@ -14,10 +14,11 @@ const Login = () => {
         setLoadingBtn(true)
         mutation.mutate(values, {
             onSuccess: (data) => {
-                console.log('data', data)
                 if (data.status_code === 200) {
                     localStorage.setItem('access_token', data.access_token)
                     localStorage.setItem('expires_at', data.expires_at)
+                    localStorage.setItem('refresh_token', data.refresh_token)
+                    localStorage.setItem('rt_expires_at', data.rt_expires_at)
                     navigate('/')
                 } else if (data.status_code === 401) {
                     setError('Email hoặc mật khẩu không chính xác!')
